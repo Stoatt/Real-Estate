@@ -63,6 +63,8 @@ public class MouseLook : MonoBehaviour
 
             transform.localRotation = Quaternion.AngleAxis(-result.y, Vector3.right);
             character.localRotation = Quaternion.AngleAxis(result.x, character.up);
+
+            
         }
     }
 

@@ -15,9 +15,13 @@ public class DigitalTooltip : InteractableObject
     [Tooltip("This is the audio clip that will play when notes are opened/closed.")]
     [SerializeField] private AudioClip interactClip;
 
+    //*Own Code to provide audio descriptions
+    [SerializeField] private AudioClip tooltipAudio;
+
     private Image imageRenderer; //should be a child of this object
     private GameObject textObject; //should be a child of the image renderer object
     private AudioSource audioSource;
+
 
     //Awake is executed before the Start method
     private void Awake()
@@ -70,6 +74,9 @@ public class DigitalTooltip : InteractableObject
     /// <returns></returns>
     public override bool Activate()
     {
+        //*Added code: declare Vector3 Variable so we can resize the icon
+        Vector3 scale = transform.localScale;
+
         if (Interaction.Instance.CurrentTooltip != this)
         {
             if (Interaction.Instance.CurrentTooltip != null)
@@ -84,10 +91,25 @@ public class DigitalTooltip : InteractableObject
             if (textObject != null)
             {
                 textObject.SetActive(true);
+
+                //*Added code: Rescale image to accomidate text
+                scale.y = 0.01F; 
+                scale.x = 0.022F; 
+                transform.localScale = scale;
+
+                //transform.localScale = new Vector3(transform.localScale.x, 5F, transform.localScale.y, 5F);//
+
             }
             if (audioSource != null && interactClip != null)
             {
+                
                 audioSource.PlayOneShot(interactClip);
+
+                audioSource.Stop();
+                audioSource.PlayOneShot(tooltipAudio);
+
+                //audio.Stop(); 
+     //audio.PlayOneShot(CLIP_HORN);
             }
             return true;
         }
@@ -100,15 +122,23 @@ public class DigitalTooltip : InteractableObject
     /// <returns></returns>
     public override bool Deactivate()
     {
+        //*Added code: declare Vector3 Variable so we can resize the icon
+        Vector3 scale = transform.localScale;//
         if (Interaction.Instance.CurrentTooltip == this)
         {        
             Interaction.Instance.CurrentTooltip = null;
             if (imageRenderer != null)
             {
                 imageRenderer.sprite = icon;
+
+                //*Added code: Reset sprite size*
+                scale.y = 0.01F; 
+                scale.x = 0.01F; 
+                transform.localScale = scale;
             }
             if (textObject != null)
             {
+                audioSource.Stop();
                 textObject.SetActive(false);
             }
             if (audioSource != null && interactClip != null)
