@@ -108,8 +108,6 @@ public class DigitalTooltip : InteractableObject
                 audioSource.Stop();
                 audioSource.PlayOneShot(tooltipAudio);
 
-                //audio.Stop(); 
-     //audio.PlayOneShot(CLIP_HORN);
             }
             return true;
         }

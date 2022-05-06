@@ -72,6 +72,7 @@ public class NavigationWaypoint : InteractableObject
             }
             if (audioSource != null && interactClip != null)
             {
+                audioSource.Stop();
                 audioSource.PlayOneShot(interactClip);
             }
             return true;
