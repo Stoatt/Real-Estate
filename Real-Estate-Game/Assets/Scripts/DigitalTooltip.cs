@@ -15,7 +15,7 @@ public class DigitalTooltip : InteractableObject
     [Tooltip("This is the audio clip that will play when notes are opened/closed.")]
     [SerializeField] private AudioClip interactClip;
 
-    //*Own Code to provide audio descriptions
+    //***Own Code to provide audio descriptions***
     [SerializeField] private AudioClip tooltipAudio;
 
     private Image imageRenderer; //should be a child of this object
@@ -100,11 +100,11 @@ public class DigitalTooltip : InteractableObject
                 //transform.localScale = new Vector3(transform.localScale.x, 5F, transform.localScale.y, 5F);//
 
             }
+            //***Own code to play tooltip audio***
             if (audioSource != null && interactClip != null)
             {
                 
                 audioSource.PlayOneShot(interactClip);
-
                 audioSource.Stop();
                 audioSource.PlayOneShot(tooltipAudio);
 
