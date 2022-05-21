@@ -18,6 +18,10 @@ public class DigitalTooltip : InteractableObject
     //***Own Code to provide audio descriptions***
     [SerializeField] private AudioClip tooltipAudio;
 
+    //***own code***
+    private Transform textPanelObject;
+    private Image tooltipImage;
+
     private Image imageRenderer; //should be a child of this object
     private GameObject textObject; //should be a child of the image renderer object
     private AudioSource audioSource;
@@ -43,6 +47,7 @@ public class DigitalTooltip : InteractableObject
             {
                 Debug.LogWarning($"{imageRenderer.name} should have a UI Text as a child!");
             }
+
         }
     }
 
@@ -58,6 +63,10 @@ public class DigitalTooltip : InteractableObject
         {
             textObject.SetActive(false);
         }
+
+        //**own code** 
+        textPanelObject = this.gameObject.transform.GetChild(0).gameObject.transform.Find("ToolTipBackground");
+        tooltipImage = this.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -74,8 +83,6 @@ public class DigitalTooltip : InteractableObject
     /// <returns></returns>
     public override bool Activate()
     {
-        //*Added code: declare Vector3 Variable so we can resize the icon
-        Vector3 scale = transform.localScale;
 
         if (Interaction.Instance.CurrentTooltip != this)
         {
@@ -92,13 +99,9 @@ public class DigitalTooltip : InteractableObject
             {
                 textObject.SetActive(true);
 
-                //*Added code: Rescale image to accomidate text
-                scale.y = 0.01F; 
-                scale.x = 0.022F; 
-                transform.localScale = scale;
-
-                //transform.localScale = new Vector3(transform.localScale.x, 5F, transform.localScale.y, 5F);//
-
+                //**own code: Deactivates the tooltip image and activates the text panel**
+                textPanelObject.gameObject.SetActive(true);
+                tooltipImage.enabled = false;
             }
             //***Own code to play tooltip audio***
             if (audioSource != null && interactClip != null)
@@ -120,24 +123,22 @@ public class DigitalTooltip : InteractableObject
     /// <returns></returns>
     public override bool Deactivate()
     {
-        //*Added code: declare Vector3 Variable so we can resize the icon
-        Vector3 scale = transform.localScale;//
+
         if (Interaction.Instance.CurrentTooltip == this)
         {        
             Interaction.Instance.CurrentTooltip = null;
             if (imageRenderer != null)
             {
                 imageRenderer.sprite = icon;
-
-                //*Added code: Reset sprite size*
-                scale.y = 0.01F; 
-                scale.x = 0.01F; 
-                transform.localScale = scale;
             }
             if (textObject != null)
             {
                 audioSource.Stop();
                 textObject.SetActive(false);
+
+                //**own code: Reactivates the tooltip image and deactivates the text panel
+                textPanelObject.gameObject.SetActive(false);
+                tooltipImage.enabled = true;
             }
             if (audioSource != null && interactClip != null)
             {
